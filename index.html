@@ -4,31 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Be My Valentine?</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="hearts-bg" id="heartsBg"></div>
 
-    <div class="card" id="mainCard">
-        <h1 style="font-size: 5rem; margin-bottom: 10px; text-shadow: none;">🧸</h1>
-        <h1>Will you be my Valentine?</h1>
-        <p class="microcopy" id="microcopy">Don't break my heart 😢</p>
-        <div class="buttons">
-            <button id="yesBtn" class="btn yes-btn">YES ❤️</button>
-            <div class="no-btn-wrapper" id="noBtnWrapper">
-                <button id="noBtn" class="btn no-btn">NO 😅</button>
+    <div class="card-container" id="cardContainer">
+        <div class="card" id="mainCard">
+            <h1 class="bear">🧸</h1>
+            <h1 class="title">Will you be my Valentine?</h1>
+            <p class="microcopy" id="microcopy">Don't break my heart 😢</p>
+            <div class="buttons">
+                <button id="yesBtn" class="btn yes-btn">YES ❤️</button>
+                <div class="no-btn-wrapper" id="noBtnWrapper">
+                    <button id="noBtn" class="btn no-btn">NO 😅</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="success-message" id="successMessage">
-        <h1 style="font-size: 5rem; margin-top: 0;">🥰</h1>
-        <h1 style="color: #d90429;">Yay! <br/> Happy Valentine 💖</h1>
-        <p>You just made my day!</p>
+        <h1 class="success-emoji">🥰</h1>
+        <h1 class="success-title">Yay!<br>Happy Valentine 💖</h1>
+        <p class="success-text">You just made my day completely!</p>
     </div>
 
+    <!-- Massive Confetti Upgrade -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
