@@ -132,6 +132,8 @@ body {
     position: relative;
     overflow: hidden;
     animation: pulseGlow 2.5s infinite;
+    --btn-scale: 1;
+    transform: scale(var(--btn-scale));
 }
 
 @keyframes pulseGlow {
@@ -156,7 +158,7 @@ body {
 }
 
 .yes-btn:hover {
-    transform: scale(1.15) translateY(-5px);
+    transform: scale(calc(var(--btn-scale) * 1.1)) translateY(-10px);
     box-shadow: 0 15px 30px rgba(255, 65, 108, 0.6);
 }
 

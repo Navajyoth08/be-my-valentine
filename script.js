@@ -65,18 +65,39 @@ const phrases = [
 let phraseIndex = 0;
 let isMoved = false;
 
+// Proximity detection for "No" button
+document.addEventListener('mousemove', (e) => {
+    const rect = noBtn.getBoundingClientRect();
+    const btnCenterX = rect.left + rect.width / 2;
+    const btnCenterY = rect.top + rect.height / 2;
+    
+    // Calculate distance between cursor and button center
+    const distance = Math.hypot(e.clientX - btnCenterX, e.clientY - btnCenterY);
+    
+    // If cursor is within 150 pixels (increased for better effect), trigger evasion
+    if (distance < 150) {
+        moveNoButton();
+    }
+});
+
 function moveNoButton() {
     if (!isMoved) {
+        // Set wrapper size to prevent layout shift in the original card
         noBtnWrapper.style.width = noBtn.offsetWidth + 'px';
         noBtnWrapper.style.height = noBtn.offsetHeight + 'px';
         
         const rect = noBtn.getBoundingClientRect();
+        
+        // Essential: Move button to document body to escape parent transform constraints
+        document.body.appendChild(noBtn);
+        
         noBtn.style.position = 'fixed';
         noBtn.style.left = rect.left + 'px';
         noBtn.style.top = rect.top + 'px';
-        noBtn.style.zIndex = '999';
+        noBtn.style.zIndex = '9999';
         isMoved = true;
         
+        // Double RAF hack to ensure the DOM move is processed before the first jump
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 moveToRandomPosition();
@@ -87,27 +108,37 @@ function moveNoButton() {
     moveToRandomPosition();
 }
 
+let yesBtnScale = 1;
+
 function moveToRandomPosition() {
-    const padding = 30;
+    const padding = 60;
     const maxX = window.innerWidth - noBtn.offsetWidth - padding;
     const maxY = window.innerHeight - noBtn.offsetHeight - padding;
     
     const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
     const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
     
-    // Smooth but slightly chaotic escape
-    noBtn.style.transition = `all ${Math.random() * 0.15 + 0.1}s cubic-bezier(0.25, 1, 0.5, 1)`;
+    // Smooth but slightly chaotic escape animation
+    noBtn.style.transition = `all ${Math.random() * 0.2 + 0.1}s cubic-bezier(0.34, 1.56, 0.64, 1)`;
     noBtn.style.left = randomX + 'px';
     noBtn.style.top = randomY + 'px';
     
-    // Add random slight rotation to escaping button
-    const randomRotate = Math.floor(Math.random() * 40) - 20;
-    noBtn.style.transform = `rotate(${randomRotate}deg)`;
+    // Add random rotation and scale for a more "panicked" look
+    const randomRotate = Math.floor(Math.random() * 60) - 30;
+    const randomScale = Math.random() * 0.2 + 0.9;
+    noBtn.style.transform = `rotate(${randomRotate}deg) scale(${randomScale})`;
     
+    // Evolution: Make the YES button grow bigger!
+    yesBtnScale += 0.15;
+    yesBtn.style.setProperty('--btn-scale', yesBtnScale);
+    yesBtn.style.zIndex = '1000'; // Keep it above other elements as it grows
+    
+    // Update microcopy with a fun message
     microcopy.textContent = phrases[phraseIndex];
     phraseIndex = (phraseIndex + 1) % phrases.length;
     
-    // Pop effect on microcopy
+    // Visual feedback on the message
+    microcopy.style.transition = 'transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
     microcopy.style.transform = 'scale(1.2)';
     microcopy.style.color = '#ff0033';
     setTimeout(() => {
@@ -116,6 +147,7 @@ function moveToRandomPosition() {
     }, 150);
 }
 
+// Keep hover/touch/click as fallbacks
 noBtn.addEventListener('mouseover', moveNoButton);
 noBtn.addEventListener('touchstart', (e) => {
     e.preventDefault(); 
@@ -127,10 +159,18 @@ noBtn.addEventListener('click', (e) => {
 });
 
 yesBtn.addEventListener('click', () => {
-    // Hide main card gracefully with scale down
-    mainCard.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
-    mainCard.style.transform = 'scale(0) rotateX(20deg)';
+    // Hide main card gracefully
+    mainCard.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease';
+    mainCard.style.transform = 'scale(0) rotateX(45deg)';
     mainCard.style.opacity = '0';
+    
+    // Remove the fleeing "No" button if it's currently on the loose
+    if (isMoved) {
+        noBtn.style.transition = 'all 0.5s ease';
+        noBtn.style.transform = 'scale(0) rotate(720deg)';
+        noBtn.style.opacity = '0';
+        setTimeout(() => noBtn.remove(), 500);
+    }
     
     setTimeout(() => {
         cardContainer.style.display = 'none';
@@ -139,7 +179,7 @@ yesBtn.addEventListener('click', () => {
             successMessage.classList.add('show');
             launchConfetti();
         }, 50);
-    }, 400);
+    }, 500);
 });
 
 function launchConfetti() {
